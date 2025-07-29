@@ -8,16 +8,16 @@ RUN apk add --no-cache git gcc musl-dev
 WORKDIR /app
 
 # Копіюємо файли залежностей
-COPY go.mod go.sum ./
+COPY go.mod ./
 
-# Завантажуємо залежності
-RUN go mod download
+# Завантажуємо залежності та створюємо go.sum
+RUN go mod download && go mod tidy
 
 # Копіюємо код
 COPY . .
 
 # Збираємо CNI бінарний файл
-RUN CGO_ENABLED=1 GOOS=linux go build -a -installsuffix cgo -o simple-cni .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o simple-cni .
 
 # Фінальний образ
 FROM alpine:latest

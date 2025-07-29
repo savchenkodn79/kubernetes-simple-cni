@@ -1,0 +1,21 @@
+# Простий Dockerfile для CNI без зовнішніх залежностей
+FROM alpine:latest
+
+# Встановлюємо необхідні мережеві інструменти
+RUN apk add --no-cache \
+    iproute2 \
+    iptables \
+    bridge-utils \
+    && rm -rf /var/cache/apk/*
+
+# Копіюємо бінарний файл (потрібно зібрати локально)
+COPY simple-cni /opt/cni/bin/simple-cni
+
+# Робимо файл виконуваним
+RUN chmod +x /opt/cni/bin/simple-cni
+
+# Встановлюємо робочу директорію
+WORKDIR /opt/cni/bin
+
+# Команда за замовчуванням
+CMD ["./simple-cni"] 
