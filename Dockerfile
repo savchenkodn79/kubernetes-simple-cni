@@ -30,13 +30,13 @@ RUN apk add --no-cache \
     && rm -rf /var/cache/apk/*
 
 # Копіюємо бінарний файл
-COPY --from=builder /app/simple-cni /opt/cni/bin/simple-cni
+COPY --from=builder /app/simple-cni /usr/local/bin/simple-cni
 
 # Робимо файл виконуваним
-RUN chmod +x /opt/cni/bin/simple-cni
+RUN chmod +x /usr/local/bin/simple-cni
 
 # Встановлюємо робочу директорію
-WORKDIR /opt/cni/bin
+WORKDIR /usr/local/bin
 
 # Команда за замовчуванням
 CMD ["./simple-cni"] 

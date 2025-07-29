@@ -97,7 +97,7 @@ case $choice in
         # Застосовуємо YAML файли
         kubectl apply -f k8s/rbac.yaml
         kubectl apply -f k8s/cni-config.yaml
-        kubectl apply -f k8s/daemonset.yaml
+        kubectl apply -f k8s/daemonset-init.yaml
         
         log "✅ CNI розгорнуто через YAML файли"
         log "Перевірте статус: kubectl get pods -n kube-system -l app=simple-cni"

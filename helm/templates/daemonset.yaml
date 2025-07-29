@@ -18,6 +18,16 @@ spec:
       serviceAccountName: {{ include "simple-cni.serviceAccountName" . }}
       {{- end }}
       hostNetwork: true
+      initContainers:
+      - name: copy-cni-binary
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        command: ["/bin/sh"]
+        args: ["-c", "cp /usr/local/bin/simple-cni /host/usr/local/bin/ && chmod +x /host/usr/local/bin/simple-cni"]
+        volumeMounts:
+        - name: simple-cni-bin
+          mountPath: /host/usr/local/bin
+        securityContext:
+          privileged: true
       containers:
       - name: {{ .Chart.Name }}
         image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
@@ -33,6 +43,8 @@ spec:
           mountPath: /opt/cni/bin
         - name: cni-conf
           mountPath: /etc/cni/net.d
+        - name: simple-cni-bin
+          mountPath: /usr/local/bin
         - name: host-etc
           mountPath: /etc
         - name: host-proc
@@ -55,7 +67,7 @@ spec:
         - name: CNI_PATH
           value: "/opt/cni/bin"
         command:
-        - /opt/cni/bin/simple-cni
+        - /usr/local/bin/simple-cni
         args:
         - "add"
         {{- if .Values.resources }}
@@ -70,6 +82,10 @@ spec:
       - name: cni-conf
         hostPath:
           path: /etc/cni/net.d
+          type: DirectoryOrCreate
+      - name: simple-cni-bin
+        hostPath:
+          path: /usr/local/bin
           type: DirectoryOrCreate
       - name: host-etc
         hostPath:

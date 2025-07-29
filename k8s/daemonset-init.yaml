@@ -21,7 +21,12 @@ spec:
       - name: copy-cni-binary
         image: simple-cni:latest
         command: ["/bin/sh"]
-        args: ["-c", "cp /usr/local/bin/simple-cni /host/usr/local/bin/ && chmod +x /host/usr/local/bin/simple-cni"]
+        args: 
+        - "-c"
+        - |
+          cp /usr/local/bin/simple-cni /host/usr/local/bin/ && 
+          chmod +x /host/usr/local/bin/simple-cni &&
+          echo "CNI binary copied successfully"
         volumeMounts:
         - name: simple-cni-bin
           mountPath: /host/usr/local/bin
