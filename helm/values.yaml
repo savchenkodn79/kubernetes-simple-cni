@@ -2,7 +2,7 @@
 replicaCount: 1
 
 image:
-  repository: savchenkodn79/k8s-simple-cni
+  repository: hub.docker.com/repository/docker/savchenkodn79/k8s-simple-cni
   pullPolicy: IfNotPresent
   tag: "v0.0.3"
 
