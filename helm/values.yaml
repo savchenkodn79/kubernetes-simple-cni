@@ -2,9 +2,9 @@
 replicaCount: 1
 
 image:
-  repository: simple-cni
+  repository: savchenkodn79/k8s-simple-cni
   pullPolicy: IfNotPresent
-  tag: "latest"
+  tag: "v0.0.1"
 
 imagePullSecrets: []
 nameOverride: ""
