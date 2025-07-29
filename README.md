@@ -26,9 +26,44 @@ CNI (Container Network Interface) - це специфікація та набі�
 
 ## Як використовувати
 
-1. Скомпілювати CNI: `go build -o simple-cni simple-cni.go`
-2. Встановити: `./install.sh`
-3. Налаштувати Kubernetes для використання цієї CNI
+### Швидкий старт
+
+1. **Автоматичне розгортання:**
+   ```bash
+   chmod +x build-and-deploy.sh
+   ./build-and-deploy.sh
+   ```
+
+2. **Локальна збірка (без Docker):**
+   ```bash
+   chmod +x build-local.sh
+   ./build-local.sh
+   ```
+
+3. **Перевірка встановлення:**
+   ```bash
+   chmod +x check-installation.sh
+   ./check-installation.sh
+   ```
+
+### Ручне розгортання
+
+1. **Збірка Docker образу:**
+   ```bash
+   docker build -t simple-cni:latest .
+   ```
+
+2. **Розгортання через Helm:**
+   ```bash
+   helm install simple-cni ./helm --namespace kube-system
+   ```
+
+3. **Розгортання через YAML:**
+   ```bash
+   kubectl apply -f k8s/rbac.yaml
+   kubectl apply -f k8s/cni-config.yaml
+   kubectl apply -f k8s/daemonset-init.yaml
+   ```
 
 ## Принцип роботи
 
