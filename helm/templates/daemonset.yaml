@@ -67,9 +67,15 @@ spec:
         - name: CNI_PATH
           value: "/opt/cni/bin"
         command:
-        - /usr/local/bin/simple-cni
+        - /bin/sh
         args:
-        - "add"
+        - "-c"
+        - |
+          echo "CNI binary installed successfully"
+          echo "Waiting for CNI calls..."
+          while true; do
+            sleep 3600
+          done
         {{- if .Values.resources }}
         resources:
           {{- toYaml .Values.resources | nindent 10 }}

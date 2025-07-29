@@ -46,6 +46,17 @@ CNI (Container Network Interface) - це специфікація та набі�
    ./check-installation.sh
    ```
 
+4. **Тестування CNI:**
+   ```bash
+   # Локальне тестування
+   chmod +x test-cni.sh
+   ./test-cni.sh
+   
+   # Тестування в кластері
+   kubectl apply -f test-pod.yaml
+   kubectl logs test-cni-pod
+   ```
+
 ### Ручне розгортання
 
 1. **Збірка Docker образу:**

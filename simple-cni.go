@@ -309,6 +309,17 @@ func parseArgs() *CmdArgs {
 	args.Args = os.Getenv("CNI_ARGS")
 	args.Path = os.Getenv("CNI_PATH")
 
+	// Якщо змінні середовища порожні, спробуємо отримати з аргументів командного рядка
+	if args.ContainerID == "" && len(os.Args) > 2 {
+		args.ContainerID = os.Args[2]
+	}
+	if args.Netns == "" && len(os.Args) > 3 {
+		args.Netns = os.Args[3]
+	}
+	if args.IfName == "" && len(os.Args) > 4 {
+		args.IfName = os.Args[4]
+	}
+
 	return args
 }
 

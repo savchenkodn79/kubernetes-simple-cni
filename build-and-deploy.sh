@@ -101,6 +101,11 @@ case $choice in
         
         log "✅ CNI розгорнуто через YAML файли"
         log "Перевірте статус: kubectl get pods -n kube-system -l app=simple-cni"
+        
+        # Налаштовуємо kubelet
+        log "🔧 Налаштування kubelet..."
+        chmod +x setup-kubelet.sh
+        ./setup-kubelet.sh
         ;;
     3)
         log "✅ Збірка завершена. Образ готовий для розгортання."

@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: test-cni-pod
+  labels:
+    app: test-cni
+spec:
+  containers:
+  - name: nginx
+    image: nginx:alpine
+    ports:
+    - containerPort: 80
+    command:
+    - sh
+    - "-c"
+    - |
+      echo "Testing CNI..."
+      echo "IP addresses:"
+      ip addr show
+      echo "Routes:"
+      ip route show
+      echo "Starting nginx..."
+      nginx -g "daemon off;"
+  restartPolicy: Never 
