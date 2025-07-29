@@ -1,0 +1,13 @@
+apiVersion: v2
+name: simple-cni
+description: A simple CNI plugin for Kubernetes
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - cni
+  - networking
+  - kubernetes
+maintainers:
+  - name: Your Name
+    email: your.email@example.com 

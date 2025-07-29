@@ -1,0 +1,100 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: {{ include "simple-cni.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "simple-cni.labels" . | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "simple-cni.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "simple-cni.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- if .Values.serviceAccount.create }}
+      serviceAccountName: {{ include "simple-cni.serviceAccountName" . }}
+      {{- end }}
+      hostNetwork: true
+      containers:
+      - name: {{ .Chart.Name }}
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_ADMIN
+        volumeMounts:
+        - name: cni-bin
+          mountPath: /opt/cni/bin
+        - name: cni-conf
+          mountPath: /etc/cni/net.d
+        - name: host-etc
+          mountPath: /etc
+        - name: host-proc
+          mountPath: /proc
+        - name: host-sys
+          mountPath: /sys
+        - name: host-var
+          mountPath: /var
+        - name: host-run
+          mountPath: /run
+        env:
+        - name: CNI_CONTAINERID
+          value: ""
+        - name: CNI_NETNS
+          value: ""
+        - name: CNI_IFNAME
+          value: ""
+        - name: CNI_ARGS
+          value: ""
+        - name: CNI_PATH
+          value: "/opt/cni/bin"
+        command:
+        - /opt/cni/bin/simple-cni
+        args:
+        - "add"
+        {{- if .Values.resources }}
+        resources:
+          {{- toYaml .Values.resources | nindent 10 }}
+        {{- end }}
+      volumes:
+      - name: cni-bin
+        hostPath:
+          path: /opt/cni/bin
+          type: DirectoryOrCreate
+      - name: cni-conf
+        hostPath:
+          path: /etc/cni/net.d
+          type: DirectoryOrCreate
+      - name: host-etc
+        hostPath:
+          path: /etc
+      - name: host-proc
+        hostPath:
+          path: /proc
+      - name: host-sys
+        hostPath:
+          path: /sys
+      - name: host-var
+        hostPath:
+          path: /var
+      - name: host-run
+        hostPath:
+          path: /run
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml .Values.nodeSelector | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity:
+        {{- toYaml .Values.affinity | nindent 8 }}
+      {{- end }}
+      {{- if .Values.tolerations }}
+      tolerations:
+        {{- toYaml .Values.tolerations | nindent 8 }}
+      {{- end }} 

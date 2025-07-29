@@ -1,0 +1,53 @@
+# Default values for simple-cni
+replicaCount: 1
+
+image:
+  repository: simple-cni
+  pullPolicy: IfNotPresent
+  tag: "latest"
+
+imagePullSecrets: []
+nameOverride: ""
+fullnameOverride: ""
+
+serviceAccount:
+  create: true
+  annotations: {}
+  name: ""
+
+rbac:
+  create: true
+
+resources: {}
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  # requests:
+  #   cpu: 100m
+  #   memory: 128Mi
+
+nodeSelector: {}
+
+tolerations:
+  - key: node-role.kubernetes.io/master
+    operator: Exists
+    effect: NoSchedule
+  - key: node-role.kubernetes.io/control-plane
+    operator: Exists
+    effect: NoSchedule
+
+affinity: {}
+
+cni:
+  config:
+    cniVersion: "1.0.0"
+    name: "simple-cni"
+    type: "simple-cni"
+    bridge: "cni0"
+    mtu: 1500
+    subnet: "10.244.0.0/16"
+    gateway: "10.244.0.1"
+    ipam:
+      type: "host-local"
+      subnet: "10.244.0.0/16"
+      gateway: "10.244.0.1" 

@@ -1,0 +1,90 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  name: simple-cni
+  namespace: kube-system
+  labels:
+    app: simple-cni
+    tier: networking
+spec:
+  selector:
+    matchLabels:
+      app: simple-cni
+  template:
+    metadata:
+      labels:
+        app: simple-cni
+    spec:
+      serviceAccountName: simple-cni
+      hostNetwork: true
+      containers:
+      - name: simple-cni
+        image: simple-cni:latest
+        imagePullPolicy: IfNotPresent
+        securityContext:
+          privileged: true
+          capabilities:
+            add:
+            - NET_ADMIN
+            - SYS_ADMIN
+        volumeMounts:
+        - name: cni-bin
+          mountPath: /opt/cni/bin
+        - name: cni-conf
+          mountPath: /etc/cni/net.d
+        - name: host-etc
+          mountPath: /etc
+        - name: host-proc
+          mountPath: /proc
+        - name: host-sys
+          mountPath: /sys
+        - name: host-var
+          mountPath: /var
+        - name: host-run
+          mountPath: /run
+        env:
+        - name: CNI_CONTAINERID
+          value: ""
+        - name: CNI_NETNS
+          value: ""
+        - name: CNI_IFNAME
+          value: ""
+        - name: CNI_ARGS
+          value: ""
+        - name: CNI_PATH
+          value: "/opt/cni/bin"
+        command:
+        - /opt/cni/bin/simple-cni
+        args:
+        - "add"
+      volumes:
+      - name: cni-bin
+        hostPath:
+          path: /opt/cni/bin
+          type: DirectoryOrCreate
+      - name: cni-conf
+        hostPath:
+          path: /etc/cni/net.d
+          type: DirectoryOrCreate
+      - name: host-etc
+        hostPath:
+          path: /etc
+      - name: host-proc
+        hostPath:
+          path: /proc
+      - name: host-sys
+        hostPath:
+          path: /sys
+      - name: host-var
+        hostPath:
+          path: /var
+      - name: host-run
+        hostPath:
+          path: /run
+      tolerations:
+      - key: node-role.kubernetes.io/master
+        operator: Exists
+        effect: NoSchedule
+      - key: node-role.kubernetes.io/control-plane
+        operator: Exists
+        effect: NoSchedule 
